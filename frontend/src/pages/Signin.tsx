@@ -1,33 +1,40 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios"; // Import Axios library
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Signin = () => {
   const [formData, setFormData] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { loading, error } = useSelector((state: any) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (e: { target: { id: any; value: any } }) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  const handleSumbit = async (e: { preventDefault: () => void }) => {
+  const handleSumbit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      setLoading(true);
+      dispatch(signInStart());
       const res = await axios.post(
         "http://localhost:3000/api/auth/signin",
         formData
-      ); // Use axios.post for POST request
-      console.log(res.data);
-      setLoading(false);
+      );
+      dispatch(signInSuccess(res.data)); // Assuming you're interested in the response data
       navigate("/");
+      return res; // Return the response explicitly
     } catch (error) {
-      setError(true);
-      setLoading(false);
+      dispatch(signInFailure(error));
       console.error(error);
+      throw error; // Throw the error to propagate it further
     }
   };
 
