@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import userRoutes from "../routes/user.routes.js";
 
 dotenv.config();
 const app = express();
@@ -11,6 +12,8 @@ mongoose
     console.log("Connected to Databse");
   })
   .catch((err) => console.log(err));
+
+app.use("/api/user", userRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
