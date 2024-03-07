@@ -4,11 +4,12 @@ import dotenv from "dotenv";
 import userRoutes from "../routes/user.routes.js";
 import authRoutes from "../routes/auth.route.js";
 import bodyParser from "body-parser";
+import cors from "cors";
 dotenv.config();
 const app = express();
 
 app.use(bodyParser.json());
-
+app.use(cors());
 mongoose
   .connect(process.env.MONGO)
   .then(() => {
