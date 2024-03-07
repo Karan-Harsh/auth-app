@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios"; // Import Axios library
 
 const Signup = () => {
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const navigate = useNavigate();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (e: { target: { id: any; value: any } }) => {
@@ -16,8 +17,12 @@ const Signup = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.post("http://localhost:3000/api/auth", formData); // Use axios.post for POST request
+      const res = await axios.post(
+        "http://localhost:3000/api/auth/signup",
+        formData
+      ); // Use axios.post for POST request
       console.log(res.data);
+      navigate("/signin");
       setLoading(false);
     } catch (error) {
       setError(true);

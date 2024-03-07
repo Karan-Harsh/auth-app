@@ -29,10 +29,14 @@ export const signin = async (req, res, next) => {
       next(errorHandler(401, "Wrong credentials"));
     }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-    res.json({
-      token,
-      message: "User logged in",
-    });
+    const expires = new Date(Date.now() + 3600000);
+    res
+      .cookie("access-token", token, {
+        httpOnly: true,
+        age: expires,
+      })
+      .status(200)
+      .json("User logged in");
   } catch (e) {
     console.log(e);
     res.status(500).json({
