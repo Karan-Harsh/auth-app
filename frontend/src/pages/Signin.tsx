@@ -1,40 +1,50 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios"; // Import Axios library
-import {
-  signInStart,
-  signInSuccess,
-  signInFailure,
-} from "../redux/user/userSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useSetRecoilState } from "recoil";
+import { emailAtom } from "../store/atoms/email";
 
 const Signin = () => {
-  const [formData, setFormData] = useState({});
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { loading, error } = useSelector((state: any) => state.user);
+  interface FormData {
+    email: string;
+    password: string;
+    // Add more properties as needed
+  }
+
+  const [formData, setFormData] = useState<FormData>({
+    email: "",
+    password: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const setEmail = useSetRecoilState(emailAtom); // Accessing set function directly
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (e: { target: { id: any; value: any } }) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  const handleSumbit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSumbit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
-      dispatch(signInStart());
+      setLoading(true);
       const res = await axios.post(
         "http://localhost:3000/api/auth/signin",
         formData
       );
-      dispatch(signInSuccess(res.data)); // Assuming you're interested in the response data
+      const { email } = formData;
+      setEmail(email); // Update Recoil state with the email
+      // Assuming you're interested in the response data
+      console.log("Response:", res.data);
       navigate("/");
       return res; // Return the response explicitly
     } catch (error) {
-      dispatch(signInFailure(error));
+      setError("Something went wrong");
       console.error(error);
       throw error; // Throw the error to propagate it further
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,7 +79,7 @@ const Signin = () => {
           <span className="text-blue-500">Sign up</span>
         </Link>
       </div>
-      <p className="text-red-500">{error && "Something went wrong"}</p>
+      <p className="text-red-500">{error}</p>
     </div>
   );
 };
