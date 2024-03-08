@@ -33,6 +33,8 @@ const Signin = () => {
         "http://localhost:3000/api/auth/signin",
         formData
       );
+      localStorage.removeItem("token");
+      localStorage.setItem("token", res.data.token);
       const { email } = formData;
       setEmail(email); // Update Recoil state with the email
       // Assuming you're interested in the response data

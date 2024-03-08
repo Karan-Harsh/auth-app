@@ -1,3 +1,4 @@
+// components/Profile.js
 import { useState, useEffect } from "react";
 import axios from "axios";
 import defaultProfilePic from "../assets/d1.jpg"; // Import your default profile picture
@@ -28,18 +29,56 @@ const Profile = () => {
     }
   };
 
+  const handleProfilePictureChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    console.log(file);
+    if (file) {
+      const token = localStorage.getItem("token");
+      const formData = {
+        token,
+        profilePic: file,
+      };
+
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/api/user/profile/picture",
+          formData, // Send formData instead of token
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        setUserData(response.data);
+      } catch (error) {
+        console.error("Error uploading profile picture:", error);
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col items-center">
       <h1 className="text-3xl text-center font-semibold my-7">Profile</h1>
       {userData && (
         <div className="relative">
-          <div className="w-32 h-35 rounded-full overflow-hidden group">
-            <img
-              className="object-cover w-full h-full transition duration-300 transform group-hover:scale-110"
-              src={userData.profilePicUrl || defaultProfilePic}
-              alt="Profile picture"
-            />
-          </div>
+          <label htmlFor="profilePicture">
+            <div className="w-32 h-35 rounded-full overflow-hidden group cursor-pointer">
+              <img
+                className="object-cover w-full h-full transition duration-300 transform group-hover:scale-110"
+                src={userData.profilePicUrl || defaultProfilePic}
+                alt="Profile picture"
+              />
+            </div>
+          </label>
+          <input
+            id="profilePicture"
+            type="file"
+            accept="image/png, image/jpeg"
+            onChange={handleProfilePictureChange}
+            style={{ display: "none" }}
+          />
           <div className="mt-4 text-center">
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2">
