@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios"; // Import Axios library
 import { useSetRecoilState } from "recoil";
-import { emailAtom } from "../store/atoms/email";
+import { authenticatedAtom, emailAtom } from "../store/atoms/email";
 
 const Signin = () => {
   interface FormData {
@@ -18,14 +18,14 @@ const Signin = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const setEmail = useSetRecoilState(emailAtom); // Accessing set function directly
+  const setAuthenticated = useSetRecoilState(authenticatedAtom); // Correct usage of useSetRecoilState
+  const setEmail = useSetRecoilState(emailAtom);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleChange = (e: { target: { id: any; value: any } }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  const handleSumbit = async (e: { preventDefault: () => void }) => {
+  const handleSumbit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       setLoading(true);
@@ -35,16 +35,15 @@ const Signin = () => {
       );
       localStorage.removeItem("token");
       localStorage.setItem("token", res.data.token);
-      const { email } = formData;
-      setEmail(email); // Update Recoil state with the email
-      // Assuming you're interested in the response data
+      setAuthenticated(true);
+      setEmail(formData.email);
       console.log("Response:", res.data);
       navigate("/");
-      return res; // Return the response explicitly
+      return res;
     } catch (error) {
       setError("Something went wrong");
       console.error(error);
-      throw error; // Throw the error to propagate it further
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -60,13 +59,15 @@ const Signin = () => {
           placeholder="Email"
           id="email"
           className="bg-slate-100 p-3 rounded-lg"
+          autoComplete="off"
         />
         <input
           onChange={handleChange}
-          type="text"
+          type="password"
           placeholder="Password"
           id="password"
           className="bg-slate-100 p-3 rounded-lg"
+          autoComplete="off"
         />
         <button
           disabled={loading}

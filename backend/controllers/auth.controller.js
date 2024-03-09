@@ -9,7 +9,7 @@ dotenv.config();
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
   console.log(password);
-  const hashedPassword = bcryptjs.hashSync(password, process.env.PASSWORD_HASH);
+  const hashedPassword = bcryptjs.hashSync(password, 10);
 
   try {
     const newUser = await User.create({

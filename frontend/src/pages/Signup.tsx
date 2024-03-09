@@ -41,6 +41,7 @@ const Signup = () => {
           placeholder="Username"
           id="username"
           className="bg-slate-100 p-3 rounded-lg"
+          autoComplete="off"
         />
         <input
           onChange={handleChange}
@@ -48,13 +49,15 @@ const Signup = () => {
           placeholder="Email"
           id="email"
           className="bg-slate-100 p-3 rounded-lg"
+          autoComplete="off"
         />
         <input
           onChange={handleChange}
-          type="text"
+          type="password"
           placeholder="Password"
           id="password"
           className="bg-slate-100 p-3 rounded-lg"
+          autoComplete="off"
         />
         <button
           disabled={loading}
