@@ -6,7 +6,7 @@ dotenv.config();
 export const profile = async (req, res) => {
   try {
     const { token } = req.body;
-    const decoded = jsonwebtoken.verify(token, "secret");
+    const decoded = jsonwebtoken.verify(token, process.env.JWT_SECRET);
     const { email } = decoded;
     const user = await User.findOne({ email });
 
@@ -22,13 +22,12 @@ export const profile = async (req, res) => {
 
 export const profilePicUpdate = async (req, res) => {
   try {
-    const { token } = req.body;
-    const profilePic = req.file.path; // Get the file path from multer
-    const decoded = jsonwebtoken.verify(token, "secret");
+    const { token, imageUrl } = req.body;
+    const decoded = jsonwebtoken.verify(token, process.env.JWT_SECRET);
     const { email } = decoded;
     const user = await User.findOneAndUpdate(
       { email },
-      { profilePic },
+      { profilePicture: imageUrl }, // Store the profile picture URL in the database
       { new: true }
     );
 
@@ -38,7 +37,7 @@ export const profilePicUpdate = async (req, res) => {
 
     return res.status(200).json(user);
   } catch (error) {
-    console.error("Error uploading profile picture:", error);
+    console.error("Error updating profile picture:", error);
     if (error.name === "JsonWebTokenError") {
       return res.status(400).json({ message: "Invalid token" });
     }

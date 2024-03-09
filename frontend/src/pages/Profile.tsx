@@ -1,11 +1,10 @@
-// components/Profile.js
 import { useState, useEffect } from "react";
 import axios from "axios";
 import defaultProfilePic from "../assets/d1.jpg"; // Import your default profile picture
 
 const Profile = () => {
   interface UserData {
-    profilePicUrl: string;
+    profilePicture: string;
     username: string;
     email: string;
   }
@@ -35,26 +34,39 @@ const Profile = () => {
     const file = e.target.files?.[0];
     console.log(file);
     if (file) {
-      const token = localStorage.getItem("token");
-      const formData = {
-        token,
-        profilePic: file,
-      };
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", import.meta.env.REACT_APP_UPLOAD_PRESET);
 
       try {
         const response = await axios.post(
-          "http://localhost:3000/api/user/profile/picture",
-          formData, // Send formData instead of token
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
+          `https://api.cloudinary.com/v1_1/${
+            import.meta.env.REACT_APP_CLOUD_NAME
+          }/image/upload`,
+          formData
         );
-        setUserData(response.data);
+        const imageUrl = response.data.secure_url;
+        await updateUserProfilePicture(imageUrl);
       } catch (error) {
         console.error("Error uploading profile picture:", error);
       }
+    }
+  };
+
+  const updateUserProfilePicture = async (imageUrl: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        "http://localhost:3000/api/user/profile/picture",
+        { token, imageUrl } // Send image URL to backend
+      );
+
+      console.log("Profile picture updated:", response.data);
+
+      // Fetch user data again to re-render with the updated profile picture
+      fetchUserData(token);
+    } catch (error) {
+      console.error("Error updating profile picture:", error);
     }
   };
 
@@ -64,10 +76,11 @@ const Profile = () => {
       {userData && (
         <div className="relative">
           <label htmlFor="profilePicture">
-            <div className="w-32 h-35 rounded-full overflow-hidden group cursor-pointer">
+            <div className="w-32 h-32 rounded-full overflow-hidden group cursor-pointer">
               <img
-                className="object-cover w-full h-full transition duration-300 transform group-hover:scale-110"
-                src={userData.profilePicUrl || defaultProfilePic}
+                className="object-cover
+                 w-full h-full transition duration-300 transform group-hover:scale-110"
+                src={userData.profilePicture || defaultProfilePic}
                 alt="Profile picture"
               />
             </div>
