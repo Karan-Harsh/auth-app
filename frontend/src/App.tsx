@@ -6,18 +6,27 @@ import Signup from "./pages/Signup";
 import Signin from "./pages/Signin";
 import Profile from "./pages/Profile";
 import Header from "./components/Header";
+import { useRecoilValue } from "recoil";
+import { authenticatedAtom } from "./store/atoms/email";
 
 function App() {
+  const isAuthenticated = useRecoilValue(authenticatedAtom);
   return (
     <>
       <BrowserRouter>
         <Header />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/" element={isAuthenticated ? <Home /> : <Signin />} />
+          <Route
+            path="/about"
+            element={isAuthenticated ? <About /> : <Signin />}
+          />
           <Route path="/signup" element={<Signup />} />
           <Route path="/signin" element={<Signin />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route
+            path="/profile"
+            element={isAuthenticated ? <Profile /> : <Signin />}
+          />
         </Routes>
       </BrowserRouter>
     </>

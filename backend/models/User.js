@@ -1,29 +1,21 @@
-import mongoose from "mongoose";
+import { z } from "zod";
 
-const userSchema = new mongoose.Schema(
-  {
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    profilePicture: {
-      type: String,
-      required: false,
-    },
-  },
-  { timestamps: true }
-);
+export const userSchema = z.object({
+  username: z.string(),
+  email: z.string().email(),
+  password: z.string().min(6),
+});
 
-const User = mongoose.model("User", userSchema);
+export const signinSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+});
 
-export default User;
+export const tokenSchema = z.object({
+  token: z.string(),
+});
+
+export const profilePicUpdateSchema = z.object({
+  token: z.string(),
+  imageUrl: z.string(),
+});

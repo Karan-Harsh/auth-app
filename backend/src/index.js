@@ -10,12 +10,12 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
-mongoose
-  .connect(process.env.MONGO)
-  .then(() => {
-    console.log("Connected to Databse");
-  })
-  .catch((err) => console.log(err));
+// mongoose
+//   .connect(process.env.MONGO)
+//   .then(() => {
+//     console.log("Connected to Databse");
+//   })
+//   .catch((err) => console.log(err));
 
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
