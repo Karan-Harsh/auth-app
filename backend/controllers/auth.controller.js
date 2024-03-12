@@ -35,9 +35,7 @@ export const signup = async (req, res, next) => {
 };
 
 export const signin = async (req, res, next) => {
-  console.log(req.body);
   const validInput = signinSchema.safeParse(req.body);
-  console.log(validInput);
   if (validInput.success) {
     const { email, password } = validInput.data;
     try {

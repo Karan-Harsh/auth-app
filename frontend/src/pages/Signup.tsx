@@ -18,7 +18,7 @@ const Signup = () => {
     try {
       setLoading(true);
       const res = await axios.post(
-        "http://localhost:3000/api/auth/signup",
+        "https://auth-app-f6ld.onrender.com/api/auth/signup",
         formData
       ); // Use axios.post for POST request
       console.log(res.data);

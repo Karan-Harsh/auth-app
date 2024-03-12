@@ -19,7 +19,7 @@ const Profile = () => {
   const fetchUserData = async (token: string | null) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/user/profile",
+        "https://auth-app-f6ld.onrender.com/api/user/profile",
         { token } // Pass the token as the request body
       ); // Adjust the endpoint URL as per your backend setup
       setUserData(response.data);
@@ -57,7 +57,7 @@ const Profile = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:3000/api/user/profile/picture",
+        "https://auth-app-f6ld.onrender.com/api/user/profile/picture",
         { token, imageUrl } // Send image URL to backend
       );
 

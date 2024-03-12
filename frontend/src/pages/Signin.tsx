@@ -30,7 +30,7 @@ const Signin = () => {
     try {
       setLoading(true);
       const res = await axios.post(
-        "http://localhost:3000/api/auth/signin",
+        "https://auth-app-f6ld.onrender.com/api/auth/signin",
         formData
       );
       localStorage.removeItem("token");
