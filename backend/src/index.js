@@ -5,11 +5,14 @@ import userRoutes from "../routes/user.routes.js";
 import authRoutes from "../routes/auth.route.js";
 import bodyParser from "body-parser";
 import cors from "cors";
+import { WebSocketServer } from "ws";
+import cookieParser from "cookie-parser";
 dotenv.config();
 const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
+app.use(cookieParser());
 // mongoose
 //   .connect(process.env.MONGO)
 //   .then(() => {
@@ -35,4 +38,11 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.listen(3000, () => console.log("Server started on Port 3000"));
+const server = app.listen(3000, () =>
+  console.log("Server started on Port 3000")
+);
+
+const wss = new WebSocketServer({ server });
+wss.on("connection", (connection, req) => {
+  console.log(req.headers);
+});

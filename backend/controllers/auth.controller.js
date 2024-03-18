@@ -4,7 +4,7 @@ import { errorHandler } from "../utils/error.js";
 import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
 import { signinSchema, userSchema } from "../models/User.js";
-
+import cookieParser from "cookie-parser";
 const primsa = new PrismaClient();
 dotenv.config();
 

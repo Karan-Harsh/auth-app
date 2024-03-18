@@ -8,6 +8,7 @@ import Profile from "./pages/Profile";
 import Header from "./components/Header";
 import { useRecoilValue } from "recoil";
 import { authenticatedAtom } from "./store/atoms/email";
+import { Chat } from "./components/Chat";
 
 function App() {
   const isAuthenticated = useRecoilValue(authenticatedAtom);
@@ -16,7 +17,7 @@ function App() {
       <BrowserRouter>
         <Header />
         <Routes>
-          <Route path="/" element={isAuthenticated ? <Home /> : <Signin />} />
+          <Route path="/" element={isAuthenticated ? <Chat /> : <Signin />} />
           <Route
             path="/about"
             element={isAuthenticated ? <About /> : <Signin />}
