@@ -4,7 +4,6 @@ import { errorHandler } from "../utils/error.js";
 import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
 import { signinSchema, userSchema } from "../models/User.js";
-import cookieParser from "cookie-parser";
 const primsa = new PrismaClient();
 dotenv.config();
 
@@ -53,13 +52,14 @@ export const signin = async (req, res, next) => {
       }
       const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
       res
-        .cookie("access-token", token, {
+        .cookie("token", token, {
           httpOnly: true,
         })
         .status(200)
         .json({
           token: token,
         });
+      console.log("Cookie has been set:", token);
     } catch (error) {
       console.error("Error during sign-in:", error);
       res.status(500).json({

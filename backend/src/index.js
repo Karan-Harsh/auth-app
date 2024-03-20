@@ -1,5 +1,4 @@
 import express from "express";
-import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoutes from "../routes/user.routes.js";
 import authRoutes from "../routes/auth.route.js";
@@ -13,12 +12,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 app.use(cookieParser());
-// mongoose
-//   .connect(process.env.MONGO)
-//   .then(() => {
-//     console.log("Connected to Databse");
-//   })
-//   .catch((err) => console.log(err));
 
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);

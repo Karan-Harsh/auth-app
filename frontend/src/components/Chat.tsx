@@ -1,19 +1,28 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export const Chat = () => {
-  const [ws, setWs] = useState(null);
+  const wsRef = useRef<WebSocket | null>(null);
+
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:3000");
-    setWs(ws);
+    wsRef.current = ws;
+
+    const handleMessage = (e: MessageEvent) => {
+      console.log("new message", e);
+    };
+
     ws.addEventListener("message", handleMessage);
+
+    return () => {
+      ws.close();
+      ws.removeEventListener("message", handleMessage);
+    };
   }, []);
-  function handleMessage(e) {
-    console.log("new message", e);
-  }
+
   return (
     <div className="flex h-screen">
       <div className="bg-white w-1/3">contacts</div>
-      <div className="flex flex-col  bg-blue-50 w-2/3 p-2">
+      <div className="flex flex-col bg-blue-50 w-2/3 p-2">
         <div className="flex-grow">messages with selected person</div>
         <div className="flex gap-2 ">
           <input
