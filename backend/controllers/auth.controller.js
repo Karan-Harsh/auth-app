@@ -51,15 +51,12 @@ export const signin = async (req, res, next) => {
         return next(errorHandler(401, "Wrong credentials"));
       }
       const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
-      res
-        .cookie("token", token, {
-          httpOnly: true,
-        })
-        .status(200)
-        .json({
-          token: token,
-        });
+      res.cookie("token", token);
+
       console.log("Cookie has been set:", token);
+      res.json({
+        message: "Signed in",
+      });
     } catch (error) {
       console.error("Error during sign-in:", error);
       res.status(500).json({
